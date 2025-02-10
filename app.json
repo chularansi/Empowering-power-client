@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chularansi.alvaapp"
     },
     "web": {
       "bundler": "metro",
@@ -40,9 +41,6 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "a18e126f-ab19-4de9-a981-1552c6c803b5"
       }
     }
   }
