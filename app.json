@@ -41,7 +41,11 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "671494f2-f6cc-456c-91ad-01e5b80e3371"
       }
-    }
+    },
+    "owner": "chularansi"
   }
 }
