@@ -1,6 +1,7 @@
 import { Consumption } from '@/types/consumption';
 
 const processData = (data: Consumption[]) => {
+  console.log('DATA: ', data);
   const barData = data.map((item) => ({
     label: item.name,
     value: Math.floor(item.kwh),

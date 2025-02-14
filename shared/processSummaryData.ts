@@ -9,20 +9,21 @@ const processSummaryData = (summaryData: Consumption[]) => {
   const lightsPeakObj = getSummary(summaryData, 'Lights');
   const evPeakObj = getSummary(summaryData, 'EV');
 
-  summaryDataArr.push(fridgePeakObj, ovenPeakObj, lightsPeakObj, evPeakObj);
+  summaryDataArr.push(fridgePeakObj, evPeakObj, ovenPeakObj, lightsPeakObj);
 
   return summaryDataArr;
 };
 
 const getSummary = (data: Consumption[], itemName: string): Summary => {
   const total = data
-    .filter(({ name }) => name === itemName)
+    .filter(({ name, isPeak }) => name === itemName && !isPeak)
     .reduce((sum, item) => sum + item.kwh, 0);
 
   const totalPH = data
     .filter(({ name, isPeak }) => name === itemName && isPeak)
     .reduce((sum, item) => sum + item.kwh, 0);
 
+  console.log(total, totalPH);
   const peakPercent = Math.floor((totalPH / total) * 100);
 
   return {
