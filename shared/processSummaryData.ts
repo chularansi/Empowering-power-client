@@ -16,14 +16,13 @@ const processSummaryData = (summaryData: Consumption[]) => {
 
 const getSummary = (data: Consumption[], itemName: string): Summary => {
   const total = data
-    .filter(({ name, isPeak }) => name === itemName && !isPeak)
+    .filter(({ name }) => name === itemName)
     .reduce((sum, item) => sum + item.kwh, 0);
 
   const totalPH = data
     .filter(({ name, isPeak }) => name === itemName && isPeak)
     .reduce((sum, item) => sum + item.kwh, 0);
 
-  console.log(total, totalPH);
   const peakPercent = Math.floor((totalPH / total) * 100);
 
   return {
