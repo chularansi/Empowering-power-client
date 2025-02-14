@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  StatusBar,
+} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
@@ -26,6 +33,7 @@ const index = () => {
     'Daily' | 'Weekly' | 'Monthly'
   >('Daily');
   const [summaryData, setSummaryData] = useState<Consumption[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,12 +46,14 @@ const index = () => {
       );
       setSummaryData(dailyData!);
       setChartData(processData(dailyData!));
+      setIsLoading(false);
     };
     fetchData();
   }, [currentDate]);
 
   const fetchConsumptions = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`${baseUrl}/api/consumptions/${userId}`);
       return response.data;
     } catch (error) {
@@ -174,6 +184,14 @@ const index = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="0000ff" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Card>
@@ -268,5 +286,12 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: 'f5f5f5',
+    paddingTop: StatusBar.currentHeight,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
