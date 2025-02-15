@@ -3,11 +3,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
   StatusBar,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { SymbolView } from 'expo-symbols';
 import Card from '@/components/Card';
@@ -19,12 +17,17 @@ import processData from '@/shared/processData';
 import moment from 'moment';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import processSummaryData from '@/shared/processSummaryData';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
-const index = () => {
-  const baseUrl = 'https://empowering-power.onrender.com';
-  const userId = 1;
+interface Params {
+  fetchData: Consumption[];
+}
 
-  const [data, setData] = useState<Consumption[]>([]);
+const dashboard = () => {
+  const { params } = useRoute<RouteProp<{ params: Params }, 'params'>>();
+  // console.log(params.fetchData);
+
+  const [data, setData] = useState<Consumption[]>(params.fetchData);
   const [chartData, setChartData] = useState<barDataItem[]>([]);
   const [currentDate, setCurrentDate] = useState<Date>(
     new Date('2024-12-26 00:00:00')
@@ -33,33 +36,12 @@ const index = () => {
     'Daily' | 'Weekly' | 'Monthly'
   >('Daily');
   const [summaryData, setSummaryData] = useState<Consumption[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchedData = await fetchConsumptions();
-      setData(fetchedData);
-      const dailyData = getConsumptionsByPeriod(
-        fetchedData,
-        'Daily',
-        currentDate
-      );
-      setSummaryData(dailyData!);
-      setChartData(processData(dailyData!));
-      setIsLoading(false);
-    };
-    fetchData();
+    const dailyData = getConsumptionsByPeriod(data, 'Daily', currentDate);
+    setSummaryData(dailyData!);
+    setChartData(processData(dailyData!));
   }, [currentDate]);
-
-  const fetchConsumptions = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(`${baseUrl}/api/consumptions/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleOnPeriodChange = (index: number) => {
     if (index === 0) {
@@ -184,14 +166,6 @@ const index = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="0000ff" />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
   return (
     <View style={styles.container}>
       <Card>
@@ -265,7 +239,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default dashboard;
 
 const styles = StyleSheet.create({
   container: {
